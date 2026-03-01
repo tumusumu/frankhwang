@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "blog": "Blog",
+    "projects": "Projects",
+    "about": "About"
+  },
+  "home": {
+    "title": "Frank Hwang",
+    "description": "Thoughts on software, technology, and life."
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Read more",
+    "noPosts": "No posts yet.",
+    "prev": "Previous",
+    "next": "Next"
+  },
+  "projects": {
+    "title": "Projects",
+    "viewProject": "View Project",
+    "sourceCode": "Source Code",
+    "noProjects": "No projects yet."
+  },
+  "about": {
+    "title": "About"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "theme": {
+    "toggle": "Toggle theme"
+  },
+  "locale": {
+    "switchTo": "中文"
+  }
+}

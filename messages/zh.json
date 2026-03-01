@@ -1,0 +1,36 @@
+{
+  "nav": {
+    "blog": "博客",
+    "projects": "项目",
+    "about": "关于"
+  },
+  "home": {
+    "title": "Frank Hwang",
+    "description": "关于软件、技术与生活的思考。"
+  },
+  "blog": {
+    "title": "博客",
+    "readMore": "阅读全文",
+    "noPosts": "暂无文章。",
+    "prev": "上一篇",
+    "next": "下一篇"
+  },
+  "projects": {
+    "title": "项目",
+    "viewProject": "查看项目",
+    "sourceCode": "源代码",
+    "noProjects": "暂无项目。"
+  },
+  "about": {
+    "title": "关于"
+  },
+  "footer": {
+    "rights": "保留所有权利。"
+  },
+  "theme": {
+    "toggle": "切换主题"
+  },
+  "locale": {
+    "switchTo": "EN"
+  }
+}
