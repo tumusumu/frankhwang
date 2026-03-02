@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type Page = {
   slug: string;
@@ -11,7 +11,7 @@ type Page = {
   published?: boolean;
 };
 
-type Status = "idle" | "submitting" | "success" | "error";
+type Status = "idle" | "submitting" | "generating" | "completed" | "error";
 
 export function QuickPages() {
   const t = useTranslations("tools");
@@ -20,6 +20,9 @@ export function QuickPages() {
   const [errorMsg, setErrorMsg] = useState("");
   const [pages, setPages] = useState<Page[]>([]);
   const [publishing, setPublishing] = useState<string | null>(null);
+  const [issueNumber, setIssueNumber] = useState<number | null>(null);
+  const [pageUrl, setPageUrl] = useState<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     fetch("/p/pages.json")
@@ -28,12 +31,52 @@ export function QuickPages() {
       .catch(() => {});
   }, []);
 
+  // Polling effect
+  useEffect(() => {
+    if (status !== "generating" || !issueNumber) return;
+
+    function poll() {
+      fetch(`/api/request/status?issue=${issueNumber}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === "completed") {
+            setStatus("completed");
+            setPageUrl(data.pageUrl || null);
+            // Refresh page list
+            fetch("/p/pages.json")
+              .then((res) => res.json())
+              .then((list) => setPages(list))
+              .catch(() => {});
+          } else if (data.status === "failed") {
+            setStatus("error");
+            setErrorMsg(t("errorGeneric"));
+          }
+          // "generating" → keep polling
+        })
+        .catch(() => {
+          // Network error — keep polling, don't fail
+        });
+    }
+
+    // Initial delay of 3s, then every 5s
+    const initialDelay = setTimeout(() => {
+      poll();
+      timerRef.current = setInterval(poll, 5000);
+    }, 3000);
+
+    return () => {
+      clearTimeout(initialDelay);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [status, issueNumber, t]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!idea.trim() || status === "submitting") return;
 
     setStatus("submitting");
     setErrorMsg("");
+    setPageUrl(null);
 
     try {
       const res = await fetch("/api/request", {
@@ -47,7 +90,9 @@ export function QuickPages() {
         throw new Error(data?.error || t("errorGeneric"));
       }
 
-      setStatus("success");
+      const data = await res.json();
+      setIssueNumber(data.issue_number);
+      setStatus("generating");
       setIdea("");
     } catch (err) {
       setStatus("error");
@@ -105,17 +150,36 @@ export function QuickPages() {
           />
           <button
             type="submit"
-            disabled={!idea.trim() || status === "submitting"}
+            disabled={!idea.trim() || status === "submitting" || status === "generating"}
             className="rounded-lg bg-[var(--foreground)] px-5 py-2.5 text-sm font-medium text-[var(--background)] transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             {status === "submitting" ? t("submitting") : t("submit")}
           </button>
         </form>
 
-        {status === "success" && (
-          <p className="mt-4 text-sm text-green-600 dark:text-green-400">
-            {t("successMessage")}
-          </p>
+        {status === "generating" && (
+          <div className="mt-4 flex items-center gap-2 text-sm text-[var(--muted)]">
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            {t("statusGenerating")}
+          </div>
+        )}
+        {status === "completed" && (
+          <div className="mt-4 space-y-1">
+            <p className="text-sm font-medium text-green-600 dark:text-green-400">
+              {t("statusCompleted")}
+            </p>
+            {pageUrl && (
+              <a
+                href={pageUrl}
+                className="inline-block text-sm text-[var(--link)] hover:underline"
+              >
+                {t("statusViewPage")}
+              </a>
+            )}
+            <p className="text-xs text-[var(--muted)]">
+              {t("statusDeployNote")}
+            </p>
+          </div>
         )}
         {status === "error" && (
           <p className="mt-4 text-sm text-red-600 dark:text-red-400">
