@@ -6,7 +6,9 @@
   },
   "home": {
     "title": "Frank Hwang",
-    "description": "关于软件、技术与生活的思考。"
+    "description": "关于软件、技术与生活的思考。",
+    "latestPosts": "最新文章",
+    "featuredProjects": "精选项目"
   },
   "blog": {
     "title": "博客",

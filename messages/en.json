@@ -6,7 +6,9 @@
   },
   "home": {
     "title": "Frank Hwang",
-    "description": "Thoughts on software, technology, and life."
+    "description": "Thoughts on software, technology, and life.",
+    "latestPosts": "Latest Posts",
+    "featuredProjects": "Featured Projects"
   },
   "blog": {
     "title": "Blog",
