@@ -48,20 +48,19 @@ export async function POST(request: NextRequest) {
 
   const issueBody = `## 页面需求\n\n${idea.trim()}\n\n---\n_自动提交自 Quick Pages_`;
 
+  const headers = {
+    Authorization: `token ${token}`,
+    Accept: "application/vnd.github.v3+json",
+    "User-Agent": "quick-pages-bot",
+  };
+
+  // Step 1: Create issue (without labels — avoids silent failure when token lacks label permission)
   const response = await fetch(
     `https://api.github.com/repos/${repo}/issues`,
     {
       method: "POST",
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "quick-pages-bot",
-      },
-      body: JSON.stringify({
-        title,
-        body: issueBody,
-        labels: ["page-request"],
-      }),
+      headers,
+      body: JSON.stringify({ title, body: issueBody }),
     }
   );
 
@@ -75,6 +74,25 @@ export async function POST(request: NextRequest) {
   }
 
   const issue = await response.json();
+
+  // Step 2: Add label separately (explicit error if token lacks permission)
+  const labelRes = await fetch(
+    `https://api.github.com/repos/${repo}/issues/${issue.number}/labels`,
+    {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ labels: ["page-request"] }),
+    }
+  ).catch((err) => {
+    console.error("Failed to add label:", err);
+    return null;
+  });
+
+  if (labelRes && !labelRes.ok) {
+    const labelErr = await labelRes.text();
+    console.error("Label API error:", labelErr);
+  }
+
   return NextResponse.json({
     success: true,
     issue_number: issue.number,

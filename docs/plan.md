@@ -22,16 +22,17 @@
 - [x] Vercel 环境变量补充 Development 环境（AUTH_SECRET, AUTH_GITHUB_ID, AUTH_GITHUB_SECRET）
 - [x] 部署到 Vercel
 
+### Quick Pages 生成流水线修复
+- [x] 修复 `app/api/request/route.ts` — 拆分 issue 创建与 label 添加为两步，防止静默失败
+- [x] 创建 `docs/test-quick-pages.md` — 端到端测试文档
+- [x] 关闭历史残留 Issue #1, #2（label 未应用）
+
 ## 📋 下次待办
 
 ### 合并后续配置（手动操作）
 - [ ] GitHub tumusumu/frankhwang：添加 `OPENROUTER_API_KEY` secret
 - [ ] GitHub tumusumu/frankhwang：添加 `LLM_MODEL` variable（可选，默认 deepseek/deepseek-chat-v3-0324）
-- [ ] GitHub tumusumu/frankhwang：创建 `page-request` label
-- [ ] 部署后验证：访问 `/p/birthday-party` 确认静态页面正常
-- [ ] 部署后验证：访问 `/en/tools` 确认页面列表加载
-- [ ] 部署后验证：表单提交到 `/api/request` 正常
-- [ ] 部署后验证：创建 `page-request` Issue 触发 Action 生成新页面
+- [ ] 端到端验证：在 `/tools` 提交测试请求，确认 issue + label + Action + 页面生成全流程通畅
 - [ ] 确认一切正常后，archive quick-pages 仓库
 
 ## ⚠️ 遗留问题
