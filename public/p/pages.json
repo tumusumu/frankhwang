@@ -12,5 +12,12 @@
     "desc": "一个极简风格的倒计时器，支持自定义分钟数和大字体显示",
     "date": "2026-03-02",
     "published": false
+  },
+  {
+    "slug": "frank-hwang-website",
+    "title": "Frank Hwang's Website",
+    "desc": "欢迎访问Frank Hwang的个人网站，了解更多关于我的信息。",
+    "date": "2026-03-02",
+    "published": false
   }
 ]
