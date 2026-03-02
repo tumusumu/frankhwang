@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
-import { projects } from "#site/content";
+import { getAllProjects } from "@/lib/projects";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 
@@ -21,7 +21,7 @@ export default async function ProjectsPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "projects" });
-  const localeProjects = projects.filter((p) => p.lang === locale);
+  const localeProjects = await getAllProjects(locale);
 
   if (localeProjects.length === 0) {
     return <p className="text-[var(--muted)]">{t("noProjects")}</p>;
@@ -33,7 +33,7 @@ export default async function ProjectsPage({ params }: Props) {
       <div className="grid gap-6">
         {localeProjects.map((project) => (
           <div
-            key={project.slug}
+            key={`${project.source}-${project.slug}`}
             className="rounded-lg border border-[var(--border)] p-6 transition-colors hover:border-[var(--muted)]"
           >
             <h2 className="text-xl font-semibold tracking-tight">
@@ -63,12 +63,14 @@ export default async function ProjectsPage({ params }: Props) {
                   {t("sourceCode")}
                 </a>
               )}
-              <Link
-                href={`/projects/${project.slug}`}
-                className="text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-              >
-                Details &rarr;
-              </Link>
+              {project.source === "velite" && (
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                >
+                  Details &rarr;
+                </Link>
+              )}
             </div>
           </div>
         ))}

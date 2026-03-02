@@ -34,7 +34,14 @@
     "successMessage": "Request submitted! Your page is being generated.",
     "errorGeneric": "Something went wrong. Please try again.",
     "generatedPages": "Generated Pages",
-    "noPages": "No pages generated yet."
+    "noPages": "No pages generated yet.",
+    "loginRequired": "Sign in to access Quick Pages.",
+    "loginWithGitHub": "Sign in with GitHub",
+    "logout": "Sign out",
+    "publishAsProject": "Publish",
+    "unpublish": "Unpublish",
+    "publishSuccess": "Published as project!",
+    "unpublishSuccess": "Removed from projects."
   },
   "about": {
     "title": "About"

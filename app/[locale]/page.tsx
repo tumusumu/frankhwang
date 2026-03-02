@@ -2,7 +2,8 @@ import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 import { PostList } from "@/components/post-list";
 import { ProjectList } from "@/components/project-list";
-import { posts, projects } from "#site/content";
+import { posts } from "#site/content";
+import { getFeaturedProjects } from "@/lib/projects";
 import type { Locale } from "@/i18n/routing";
 
 type Props = {
@@ -27,9 +28,7 @@ export default async function HomePage({ params }: Props) {
     .filter((post) => post.lang === locale && post.published)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  const featuredProjects = projects.filter(
-    (project) => project.lang === locale && project.featured
-  );
+  const featuredProjects = await getFeaturedProjects(locale);
 
   return (
     <div className="space-y-16">

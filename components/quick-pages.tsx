@@ -8,9 +8,14 @@ type Page = {
   title: string;
   desc: string;
   date: string;
+  published?: boolean;
 };
 
 type Status = "idle" | "submitting" | "success" | "error";
+
+const API_BASE =
+  process.env.NEXT_PUBLIC_QUICK_PAGES_API_URL ||
+  "https://quick-pages.vercel.app";
 
 export function QuickPages() {
   const t = useTranslations("tools");
@@ -18,12 +23,19 @@ export function QuickPages() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [pages, setPages] = useState<Page[]>([]);
+  const [publishing, setPublishing] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/p/pages.json")
+    fetch(`${API_BASE}/api/pages`)
       .then((res) => res.json())
       .then((data) => setPages(data))
-      .catch(() => {});
+      .catch(() => {
+        // Fallback to local pages.json
+        fetch("/p/pages.json")
+          .then((res) => res.json())
+          .then((data) => setPages(data))
+          .catch(() => {});
+      });
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -50,6 +62,31 @@ export function QuickPages() {
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : t("errorGeneric"));
+    }
+  }
+
+  async function handlePublish(slug: string, action: "publish" | "unpublish") {
+    setPublishing(slug);
+    try {
+      const res = await fetch("/api/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, action }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      setPages((prev) =>
+        prev.map((p) =>
+          p.slug === slug
+            ? { ...p, published: action === "publish" }
+            : p
+        )
+      );
+    } catch {
+      // silently fail — user can retry
+    } finally {
+      setPublishing(null);
     }
   }
 
@@ -107,19 +144,48 @@ export function QuickPages() {
         ) : (
           <div className="mt-6 grid gap-4">
             {pages.map((page) => (
-              <a
+              <div
                 key={page.slug}
-                href={`/p/${page.slug}`}
-                className="block rounded-lg border border-[var(--border)] p-4 transition-colors hover:border-[var(--muted)]"
+                className="rounded-lg border border-[var(--border)] p-4 transition-colors hover:border-[var(--muted)]"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="font-medium">{page.title}</h3>
-                  <span className="text-xs text-[var(--muted)]">
-                    {page.date}
-                  </span>
+                <a
+                  href={`/p/${page.slug}`}
+                  className="block"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">{page.title}</h3>
+                    <span className="text-xs text-[var(--muted)]">
+                      {page.date}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-sm text-[var(--muted)]">
+                    {page.desc}
+                  </p>
+                </a>
+                <div className="mt-3 flex items-center gap-2">
+                  {page.published && (
+                    <span className="text-xs text-green-600 dark:text-green-400">
+                      ● {t("publishAsProject")}
+                    </span>
+                  )}
+                  <button
+                    onClick={() =>
+                      handlePublish(
+                        page.slug,
+                        page.published ? "unpublish" : "publish"
+                      )
+                    }
+                    disabled={publishing === page.slug}
+                    className="ml-auto text-xs text-[var(--link)] hover:underline disabled:opacity-50"
+                  >
+                    {publishing === page.slug
+                      ? "..."
+                      : page.published
+                        ? t("unpublish")
+                        : t("publishAsProject")}
+                  </button>
                 </div>
-                <p className="mt-1 text-sm text-[var(--muted)]">{page.desc}</p>
-              </a>
+              </div>
             ))}
           </div>
         )}

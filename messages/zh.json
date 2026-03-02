@@ -34,7 +34,14 @@
     "successMessage": "需求已提交！页面正在自动生成中。",
     "errorGeneric": "出了点问题，请稍后再试。",
     "generatedPages": "已生成页面",
-    "noPages": "暂无已生成的页面。"
+    "noPages": "暂无已生成的页面。",
+    "loginRequired": "请登录后使用快速页面工具。",
+    "loginWithGitHub": "使用 GitHub 登录",
+    "logout": "退出登录",
+    "publishAsProject": "发布为项目",
+    "unpublish": "取消发布",
+    "publishSuccess": "已发布为精选项目！",
+    "unpublishSuccess": "已从项目中移除。"
   },
   "about": {
     "title": "关于"

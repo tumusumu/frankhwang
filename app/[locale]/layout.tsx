@@ -2,6 +2,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { ThemeProvider } from "next-themes";
+import { SessionProvider } from "next-auth/react";
 import { routing } from "@/i18n/routing";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
@@ -25,16 +26,18 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <NextIntlClientProvider>
-        <div className="flex min-h-screen flex-col">
-          <Nav />
-          <main className="mx-auto w-full max-w-[680px] flex-1 px-6 py-12">
-            {children}
-          </main>
-          <Footer />
-        </div>
-      </NextIntlClientProvider>
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <NextIntlClientProvider>
+          <div className="flex min-h-screen flex-col">
+            <Nav />
+            <main className="mx-auto w-full max-w-[680px] flex-1 px-6 py-12">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </NextIntlClientProvider>
+      </ThemeProvider>
+    </SessionProvider>
   );
 }
