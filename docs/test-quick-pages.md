@@ -26,17 +26,18 @@
 
 ### Step 1：提交页面需求
 
-1. 访问 `/en/tools`（或 `/zh/tools`）
+1. 访问 `/en/tools`（或 `/zh/tools`），使用 GitHub 登录
 2. 在输入框填写需求，例如："做一个简单的 hello world 页面"
-3. 点击"生成页面"
+3. 点击"生成"
 
 **预期结果：**
-- 页面显示"需求已提交！页面正在自动生成中。"
-- 返回的 JSON 包含 `issue_number` 和 `issue_url`
+- 按钮变为 disabled 状态，显示"生成中..."
+- 提交成功后，显示 CSS spinner + "页面生成中，请稍候..."
+- 浏览器 DevTools → Network 可看到每 5 秒一次的 GET `/api/request/status?issue=N` 轮询
 
 **排查方法：**
 - 浏览器 DevTools → Network → POST `/api/request`
-- 检查 response body 和 status code
+- 检查 response body 和 status code，应包含 `issue_number`
 - 如果 500：检查 Vercel Function Logs，确认 `GITHUB_TOKEN` 是否配置
 
 ### Step 2：确认 Issue 创建且带 label
@@ -110,15 +111,22 @@ gh api repos/tumusumu/frankhwang/contents/public/p/pages.json --jq '.content' | 
 - Vercel dashboard 显示新的 deployment
 - 部署状态为 Ready
 
-### Step 6：验证页面可访问
+### Step 6：验证进度反馈 + 页面可访问
 
-1. 刷新 `/en/tools` 页面
-2. 新页面应出现在 Quick Pages 列表中
-3. 点击新页面链接
+1. 等待 Action 完成 + Vercel 部署
+2. 工具页面应自动从"生成中"切换为"页面已生成！"
+3. 显示绿色成功文字 + "查看页面 →" 链接 + 部署提示
+4. 页面列表应自动刷新，新页面出现在列表中
+5. 点击链接跳转到 `/p/<slug>`
 
 **预期结果：**
+- 轮询自动停止
 - 页面列表包含新生成的页面
 - 点击后跳转到 `/p/<slug>`，页面正常渲染
+
+**排查方法：**
+- 如果一直显示"生成中"：检查 DevTools → Network → GET `/api/request/status` 的返回值
+- 如果返回 `generating` 但 Action 已完成：可能 issue 未被关闭，检查 GitHub Action 日志
 
 ---
 
@@ -132,6 +140,8 @@ gh api repos/tumusumu/frankhwang/contents/public/p/pages.json --jq '.content' | 
 | Action 失败 | `OPENROUTER_API_KEY` 未配置 | `gh secret set OPENROUTER_API_KEY --repo tumusumu/frankhwang` |
 | 页面未出现在列表 | Vercel 未重新部署 | 检查 Vercel dashboard，手动触发 redeploy |
 | `/p/<slug>` 404 | rewrite 规则未生效 | 检查 `next.config.ts` 中 `/p/:slug` rewrite |
+| 一直显示"生成中" | 轮询 API 未检测到完成 | `curl /api/request/status?issue=N` 检查返回值 |
+| 轮询返回 404 | Issue 缺少 `page-request` label | 检查 issue labels，手动添加 label |
 
 ## 配置 Secrets 命令参考
 

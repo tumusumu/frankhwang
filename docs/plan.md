@@ -27,12 +27,28 @@
 - [x] 创建 `docs/test-quick-pages.md` — 端到端测试文档
 - [x] 关闭历史残留 Issue #1, #2（label 未应用）
 
+### Quick Pages 生成进度反馈
+- [x] 新建 `app/api/request/status/route.ts` — GET 端点，轮询 GitHub Issue 状态
+  - 校验 issue number 格式 + `page-request` label 安全校验
+  - Issue closed + 评论含页面 URL → `completed`
+  - Issue open + 评论含 ❌ → `failed`
+  - Issue open + 超 10 分钟 → `failed`（超时）
+  - 其余 → `generating`
+- [x] 修改 `components/quick-pages.tsx` — 提交后轮询进度
+  - Status 类型改为 `idle | submitting | generating | completed | error`
+  - 提交成功后保存 `issue_number`，进入 `generating` 状态
+  - 延迟 3 秒后开始每 5 秒轮询 `/api/request/status?issue=N`
+  - 完成 → 显示绿色成功文字 + 页面链接 + 部署提示，刷新页面列表
+  - 失败 → 显示红色错误信息
+  - 生成中 → CSS spinner + "页面生成中，请稍候..."
+- [x] 更新 `messages/zh.json` 和 `messages/en.json` — 新增 4 个状态文案，删除 `successMessage`
+
 ## 📋 下次待办
 
 ### 合并后续配置（手动操作）
 - [ ] GitHub tumusumu/frankhwang：添加 `OPENROUTER_API_KEY` secret
 - [ ] GitHub tumusumu/frankhwang：添加 `LLM_MODEL` variable（可选，默认 deepseek/deepseek-chat-v3-0324）
-- [ ] 端到端验证：在 `/tools` 提交测试请求，确认 issue + label + Action + 页面生成全流程通畅
+- [ ] 端到端验证：在 `/tools` 提交测试请求，确认 issue + label + Action + 页面生成 + 进度轮询全流程通畅
 - [ ] 确认一切正常后，archive quick-pages 仓库
 
 ## ⚠️ 遗留问题
