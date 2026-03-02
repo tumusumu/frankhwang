@@ -2,7 +2,7 @@ name: Generate Page
 
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
 
 jobs:
   generate:
