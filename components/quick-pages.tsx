@@ -3,8 +3,6 @@
 import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
-const API_BASE = "https://quick-pages.vercel.app";
-
 type Page = {
   slug: string;
   title: string;
@@ -22,7 +20,7 @@ export function QuickPages() {
   const [pages, setPages] = useState<Page[]>([]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/pages.json`)
+    fetch("/p/pages.json")
       .then((res) => res.json())
       .then((data) => setPages(data))
       .catch(() => {});
@@ -36,7 +34,7 @@ export function QuickPages() {
     setErrorMsg("");
 
     try {
-      const res = await fetch(`${API_BASE}/api/request`, {
+      const res = await fetch("/api/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idea: idea.trim() }),
@@ -111,9 +109,7 @@ export function QuickPages() {
             {pages.map((page) => (
               <a
                 key={page.slug}
-                href={`${API_BASE}/${page.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/p/${page.slug}`}
                 className="block rounded-lg border border-[var(--border)] p-4 transition-colors hover:border-[var(--muted)]"
               >
                 <div className="flex items-center justify-between">
