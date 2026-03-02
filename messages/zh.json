@@ -2,6 +2,7 @@
   "nav": {
     "blog": "博客",
     "projects": "项目",
+    "tools": "工具",
     "about": "关于"
   },
   "home": {
@@ -22,6 +23,18 @@
     "viewProject": "查看项目",
     "sourceCode": "源代码",
     "noProjects": "暂无项目。"
+  },
+  "tools": {
+    "title": "工具",
+    "quickPagesHeading": "快速页面",
+    "quickPagesDescription": "描述你需要的页面，AI 将在几秒内为你生成。",
+    "inputPlaceholder": "描述你想创建的页面...",
+    "submit": "生成",
+    "submitting": "生成中...",
+    "successMessage": "需求已提交！页面正在自动生成中。",
+    "errorGeneric": "出了点问题，请稍后再试。",
+    "generatedPages": "已生成页面",
+    "noPages": "暂无已生成的页面。"
   },
   "about": {
     "title": "关于"

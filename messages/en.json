@@ -2,6 +2,7 @@
   "nav": {
     "blog": "Blog",
     "projects": "Projects",
+    "tools": "Tools",
     "about": "About"
   },
   "home": {
@@ -22,6 +23,18 @@
     "viewProject": "View Project",
     "sourceCode": "Source Code",
     "noProjects": "No projects yet."
+  },
+  "tools": {
+    "title": "Tools",
+    "quickPagesHeading": "Quick Pages",
+    "quickPagesDescription": "Describe a page you need, and AI will generate it for you in seconds.",
+    "inputPlaceholder": "Describe the page you want to create...",
+    "submit": "Generate",
+    "submitting": "Generating...",
+    "successMessage": "Request submitted! Your page is being generated.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "generatedPages": "Generated Pages",
+    "noPages": "No pages generated yet."
   },
   "about": {
     "title": "About"
