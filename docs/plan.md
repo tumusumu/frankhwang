@@ -13,10 +13,18 @@
 - [x] 复制并更新 `.cursorrules`
 - [x] pnpm build 通过
 
+### quick-pages 卡片化预览
+- [x] `components/project-list.tsx` — quick-pages 改为 2 列卡片网格 + iframe 缩略图预览
+- [x] iframe sandbox="" 禁止 JS，纯静态渲染
+- [x] transform: scale(0.28) 缩放 1280×800 → ~358×224
+- [x] position: absolute + overflow-hidden 解决布局溢出
+- [x] Velite 项目保持原有文字列表样式
+- [x] Vercel 环境变量补充 Development 环境（AUTH_SECRET, AUTH_GITHUB_ID, AUTH_GITHUB_SECRET）
+- [x] 部署到 Vercel
+
 ## 📋 下次待办
 
 ### 合并后续配置（手动操作）
-- [ ] Vercel frankhwang 项目：添加 `GITHUB_TOKEN` 环境变量
 - [ ] GitHub tumusumu/frankhwang：添加 `OPENROUTER_API_KEY` secret
 - [ ] GitHub tumusumu/frankhwang：添加 `LLM_MODEL` variable（可选，默认 deepseek/deepseek-chat-v3-0324）
 - [ ] GitHub tumusumu/frankhwang：创建 `page-request` label
