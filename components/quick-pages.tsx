@@ -13,10 +13,6 @@ type Page = {
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_QUICK_PAGES_API_URL ||
-  "https://quick-pages.vercel.app";
-
 export function QuickPages() {
   const t = useTranslations("tools");
   const [idea, setIdea] = useState("");
@@ -26,16 +22,10 @@ export function QuickPages() {
   const [publishing, setPublishing] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/pages`)
+    fetch("/p/pages.json")
       .then((res) => res.json())
       .then((data) => setPages(data))
-      .catch(() => {
-        // Fallback to local pages.json
-        fetch("/p/pages.json")
-          .then((res) => res.json())
-          .then((data) => setPages(data))
-          .catch(() => {});
-      });
+      .catch(() => {});
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {

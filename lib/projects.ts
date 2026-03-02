@@ -19,25 +19,27 @@ type QuickPage = {
   published?: boolean;
 };
 
-const API_BASE =
-  process.env.QUICK_PAGES_API_URL || "https://quick-pages.vercel.app";
+const PAGES_JSON_URL =
+  "https://raw.githubusercontent.com/tumusumu/frankhwang/main/public/p/pages.json";
 
 async function getPublishedQuickPages(): Promise<UnifiedProject[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/published`, {
+    const res = await fetch(PAGES_JSON_URL, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return [];
 
     const pages: QuickPage[] = await res.json();
-    return pages.map((p) => ({
-      title: p.title,
-      slug: p.slug,
-      description: p.desc,
-      url: `${API_BASE}/p/${p.slug}`,
-      featured: true,
-      source: "quick-pages" as const,
-    }));
+    return pages
+      .filter((p) => p.published === true)
+      .map((p) => ({
+        title: p.title,
+        slug: p.slug,
+        description: p.desc,
+        url: `/p/${p.slug}`,
+        featured: true,
+        source: "quick-pages" as const,
+      }));
   } catch {
     return [];
   }

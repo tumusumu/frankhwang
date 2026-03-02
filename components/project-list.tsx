@@ -20,17 +20,12 @@ export function ProjectList({ projects }: { projects: Project[] }) {
   return (
     <div className="space-y-8">
       {projects.map((project) => {
-        const isExternal = project.source === "quick-pages";
+        const isQuickPage = project.source === "quick-pages";
 
         return (
           <article key={`${project.source ?? "velite"}-${project.slug}`}>
-            {isExternal ? (
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block"
-              >
+            {isQuickPage ? (
+              <a href={project.url} className="group block">
                 <h3 className="text-lg font-semibold tracking-tight group-hover:text-[var(--link)] transition-colors">
                   {project.title}
                 </h3>
@@ -49,7 +44,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
               </Link>
             )}
             <div className="mt-2 flex gap-4 text-sm">
-              {project.url && !isExternal && (
+              {project.url && !isQuickPage && (
                 <a
                   href={project.url}
                   target="_blank"

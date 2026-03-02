@@ -160,6 +160,7 @@ if (!pages.find(p => p.slug === safeSlug)) {
     title: pageTitle,
     desc: description,
     date: new Date().toISOString().split('T')[0],
+    published: false,
   });
   writeFileSync(pagesFile, JSON.stringify(pages, null, 2) + '\n');
   console.log(`📋 Updated pages.json (${pages.length} pages)`);
